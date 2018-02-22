@@ -95,7 +95,6 @@ class Scripts extends AbstractHelper
         if (isset($this->files[$placeholder])) {
             return $this->renderHMTL($this->files[$placeholder]);
         }
-
         return '';
     }
 
@@ -148,26 +147,7 @@ class Scripts extends AbstractHelper
      */
     public function buildURL($source)
     {
-        return $this->getBaseUrl()
-            .$source
-            .(in_array(\Nip_File_System::instance()->getExtension($source), ['js', 'php']) ? '' : '.js');
-    }
-
-    public function getBaseUrl()
-    {
-        return SCRIPTS_URL;
-    }
-
-    public function getBasePath()
-    {
-        return SCRIPTS_PATH;
-    }
-
-    public function setPack($pack = true)
-    {
-        $this->_pack = $pack;
-
-        return $this;
+        return asset('/scripts/' . $source . '.js');
     }
 
     /**
@@ -181,7 +161,6 @@ class Scripts extends AbstractHelper
             $return .= implode("\r\n", $this->rawScripts);
             $return .= '</script>';
         }
-
         return $return;
     }
 }

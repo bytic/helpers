@@ -2,35 +2,58 @@
 
 namespace Nip\Helpers\View;
 
+/**
+ * Class TinyMCE
+ * @package Nip\Helpers\View
+ */
 class TinyMCE extends AbstractHelper
 {
-    protected $_enabled = false;
-    protected $_base = 'tinymce';
+    /**
+     * @var bool
+     */
+    protected $enabled = false;
 
+    /**
+     * @var string
+     */
+    protected $base = 'tinymce';
+
+    /**
+     * @param bool $enabled
+     */
     public function setEnabled($enabled = true)
     {
-        $this->_enabled = $enabled;
+        $this->enabled = $enabled;
     }
 
+    /**
+     * @return string
+     */
     public function init()
     {
-        if ($this->_enabled) {
-            $this->getView()->Scripts()->setPack(false)
-                ->add($this->getBase().'/jquery.tinymce.min.js', 'tinymce')
-                ->add($this->getBase().'/tinymce.min.js', 'tinymce')
-                ->add($this->getBase().'/init.js', 'tinymce');
+        if ($this->enabled) {
+            $this->getView()->Scripts()
+                ->add($this->getBase() . '/jquery.tinymce.min.js', 'tinymce')
+                ->add($this->getBase() . '/tinymce.min.js', 'tinymce')
+                ->add($this->getBase() . '/init.js', 'tinymce');
         }
 
         return $this->getView()->Scripts()->render('tinymce');
     }
 
+    /**
+     * @return string
+     */
     public function getBase()
     {
-        return $this->_base;
+        return $this->base;
     }
 
+    /**
+     * @param $base
+     */
     public function setBase($base)
     {
-        $this->_base = $base;
+        $this->base = $base;
     }
 }

@@ -1,15 +1,14 @@
 <?php
-
 namespace Nip\Helpers\View;
 
 class GoogleWebFonts extends AbstractHelper
 {
     protected $_fontSelected = [];
-    protected $_fontStrings = [
-        'Open+Sans'           => 'Open+Sans:400,300,600,700,800,300italic,400italic,700italic,800italic:latin,latin-ext',
+    protected $_fontStrings = array(
+        'Open+Sans' => 'Open+Sans:400,300,600,700,800,300italic,400italic,700italic,800italic:latin,latin-ext',
         'Open+Sans+Condensed' => 'Open+Sans+Condensed:300,700,300italic:latin,latin-ext',
-        'Kaushan+Script'      => 'Kaushan+Script::latin,latin-ext',
-    ];
+        'Kaushan+Script' => 'Kaushan+Script::latin,latin-ext',
+    );
 
     public function __toString()
     {
@@ -37,7 +36,6 @@ class GoogleWebFonts extends AbstractHelper
               })(); 
             </script>';
         }
-
         return $return;
     }
 

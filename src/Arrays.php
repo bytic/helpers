@@ -2,13 +2,66 @@
 
 class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
 {
-    public function toXLS($array, $filename, $labels = [])
+
+    /**
+     * Determine whether the given value is array accessible.
+     *
+     * @param  mixed $value
+     * @return bool
+     */
+    public static function accessible($value)
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+
+    /**
+     * Determine if the given key exists in the provided array.
+     *
+     * @param  \ArrayAccess|array $array
+     * @param  string|int $key
+     * @return bool
+     */
+    public static function exists($array, $key)
+    {
+        if ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * Return the first element in an array passing a given truth test.
+     *
+     * @param  Nip\Container\ServiceProviders\Providers\AbstractServiceProvider[] $array
+     * @param  callable|null $callback
+     * @param  mixed $default
+     * @return mixed
+     */
+    public static function first($array, callable $callback = null, $default = null)
+    {
+        if (is_null($callback)) {
+            if (empty($array)) {
+                return value($default);
+            }
+            foreach ($array as $item) {
+                return $item;
+            }
+        }
+        foreach ($array as $key => $value) {
+            if (call_user_func($callback, $value, $key)) {
+                return $value;
+            }
+        }
+        return value($default);
+    }
+
+    public function toXLS($array, $filename, $labels = array())
     {
         $xls = new Spreadsheet_Excel_Writer();
         $xls->setVersion(8);
 
         $sheet = $xls->addWorksheet();
-        $sheet->setInputEncoding('UTF-8');
+        $sheet->setInputEncoding("UTF-8");
 
         $heading = $xls->addFormat(['bold' => '1', 'align' => 'center']);
 
@@ -34,8 +87,8 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
             }
         }
 
-        header('Cache-Control: private, max-age=1, pre-check=1', true);
-        header('Pragma: none', true);
+        header("Cache-Control: private, max-age=1, pre-check=1", true);
+        header("Pragma: none", true);
 
         $xls->send($filename);
         $xls->close();
@@ -43,10 +96,38 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * Produces a new version of the array that does not contain any of the specified values.
+     * Get an item from an array using "dot" notation.
+     *
+     * @param  \ArrayAccess|array $array
+     * @param  string $key
+     * @param  mixed $default
+     * @return mixed
+     */
+    public static function get($array, $key, $default = null)
+    {
+        if (!static::accessible($array)) {
+            return value($default);
+        }
+        if (is_null($key)) {
+            return $array;
+        }
+        if (static::exists($array, $key)) {
+            return $array[$key];
+        }
+        foreach (explode('.', $key) as $segment) {
+            if (static::accessible($array) && static::exists($array, $segment)) {
+                $array = $array[$segment];
+            } else {
+                return value($default);
+            }
+        }
+        return $array;
+    }
+
+    /**
+     * Produces a new version of the array that does not contain any of the specified values
      *
      * @param array $array
-     *
      * @return array
      */
     public function without($array)
@@ -64,10 +145,9 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * Produces a new version of the array that does not contain any of the specified keys.
+     * Produces a new version of the array that does not contain any of the specified keys
      *
      * @param array $array
-     *
      * @return array
      */
     public function withoutKeys($array)
@@ -87,9 +167,8 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     /**
      * Fetch the same property for all the elements.
      *
-     * @param array  $array
+     * @param array $array
      * @param string $property
-     *
      * @return array The property values
      */
     public function changeKey($array, $property)
@@ -108,10 +187,9 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     /**
      * Fetch the same property for all the elements.
      *
-     * @param array|\Nip\Records\Collections\Collection $array
-     * @param string                                    $property
-     * @param bool|string                               $return
-     *
+     * @param Nip\Records\Collections\Collection $array
+     * @param string $property
+     * @param bool|string $return
      * @return array The property values
      */
     public function pluck($array, $property, &$return = false)
@@ -134,7 +212,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     /**
      * Fetch the same property for all the elements.
      *
-     * @param array  $array
+     * @param array $array
      * @param string $property
      */
     public function pluckFromArray($array, $property)
@@ -149,11 +227,10 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * Finds array item that matches $params.
+     * Finds array item that matches $params
      *
      * @param ArrayAccess $array
-     * @param array       $params
-     *
+     * @param array $params
      * @return mixed
      */
     public function find($array, $params)
@@ -171,15 +248,15 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
                 }
             }
         }
+
+        return null;
     }
 
     /**
-     * Finds all array items that match $params.
+     * Finds all array items that match $params
      *
-     * @param array  $array
-     * @param array  $params
-     * @param string $key
-     *
+     * @param array $array
+     * @param array $params
      * @return array
      */
     public function findAll($array, $params, $returnKey = false)
@@ -208,10 +285,9 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * Transposes a bidimensional array (matrix).
+     * Transposes a bidimensional array (matrix)
      *
      * @param array $array
-     *
      * @return array
      */
     public function transpose($array)
@@ -232,10 +308,9 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     /**
      * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
      *
-     * @param array            $data
-     * @param string           $rootNodeName - what you want the root node to be - defaults to data
-     * @param SimpleXMLElement $xml          - should only be used recursively
-     *
+     * @param array $data
+     * @param string $rootNodeName - what you want the root node to be - defaults to data
+     * @param SimpleXMLElement $xml - should only be used recursively
      * @return string XML
      */
     public function toXML($data, $rootNodeName = 'ResultSet', &$xml = null)
@@ -284,20 +359,18 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
         $doc->preserveWhiteSpace = false;
         $doc->loadXML($xml->asXML());
         $doc->formatOutput = true;
-
         return $doc->saveXML();
     }
 
     /**
-     * Determine if a variable is an associative array.
+     * Determine if a variable is an associative array
      *
      * @param array $array
-     *
      * @return bool
      */
     public static function isAssoc($array)
     {
-        return is_array($array) && 0 !== count(array_diff_key($array, array_keys(array_keys($array))));
+        return (is_array($array) && 0 !== count(array_diff_key($array, array_keys(array_keys($array)))));
     }
 
     public function merge_distinct(array &$array1, array &$array2)
@@ -305,10 +378,10 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
         $merged = $array1;
 
         foreach ($array2 as $key => &$value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->merge_distinct($merged[$key], $value);
+            if (is_array($value) && isset($merged [$key]) && is_array($merged [$key])) {
+                $merged [$key] = $this->merge_distinct($merged [$key], $value);
             } else {
-                $merged[$key] = $value;
+                $merged [$key] = $value;
             }
         }
 

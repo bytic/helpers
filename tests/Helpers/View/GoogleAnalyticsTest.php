@@ -3,6 +3,7 @@
 namespace Nip\Helpers\Tests\Helpers\View;
 
 use Mockery as m;
+use Nip\FlashData\FlashData;
 use Nip\Helpers\View\GoogleAnalytics;
 
 /**
@@ -21,19 +22,19 @@ class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
      */
     protected $_object;
 
-    protected $_ua = '';
-    protected $_domain = 'galantom.loc';
+    protected $trackingId = '';
+    protected $trackingDomain = 'galantom.loc';
 
     public function testAddOperation()
     {
         $data = [
             'orderId' => 1,
-            'amount'  => 100,
+            'amount' => 100,
         ];
         $this->_object->addTransaction($data);
 
         $response = [
-            1 => (object) $data,
+            1 => (object) $data
         ];
 
         static::assertEquals($this->_object->getTransactions(), $response);
@@ -41,11 +42,14 @@ class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
 
     protected function setUp()
     {
-        $flashMock = m::mock('Nip_Flash')->shouldDeferMissing();
+        parent::setUp();
+
+        $flashMock = m::mock(FlashData::class)->shouldDeferMissing();
 
         $this->_object = new GoogleAnalytics();
+        /** @noinspection PhpParamsInspection */
         $this->_object->setFlashMemory($flashMock);
-        $this->_object->setUA($this->_ua);
-        $this->_object->setDomain($this->_domain);
+        $this->_object->setTrackingId($this->trackingId);
+        $this->_object->setDomain($this->trackingDomain);
     }
 }

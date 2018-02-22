@@ -1,41 +1,40 @@
 <?php
 
 /**
- * Nip Framework.
+ * Nip Framework
  *
  * @category   Nip
- *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- *
  * @version    SVN: $Id: Fulltext.php 14 2009-04-13 11:24:22Z victor.stanciu $
  */
+
 class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper
 {
     public function buildString($keywords, $mode = 'any')
     {
-        $return = '';
+        $return = "";
 
-        $keywords = explode(' ', $keywords);
+        $keywords = explode(" ", $keywords);
 
         switch ($mode) {
-            case 'any':
+            case "any":
                 foreach ($keywords as $item) {
                     $return .= $this->matchNumbers($item).'* ';
                 }
             break;
 
-            case 'all':
+            case "all":
                 if (count($keywords) == 1) {
-                    $return .= $this->matchNumbers(reset($keywords)).'* ';
+                    $return .=  $this->matchNumbers(reset($keywords)).'* ';
                 } else {
                     foreach ($keywords as $item) {
-                        $return .= '+'.$this->matchNumbers($item).'* ';
+                        $return .= '+'. $this->matchNumbers($item).'* ';
                     }
                 }
 
             break;
-                case 'exact':
+                case "exact":
                 foreach ($keywords as $item) {
                     $return .= $this->matchNumbers($item).' ';
                 }
@@ -48,20 +47,22 @@ class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper
         return $return;
     }
 
+
     private function matchNumbers($input)
     {
         $stripped = ['%', ',', '.'];
         $replaced = ['__', '_', '_'];
 
-        if (is_numeric(str_replace($stripped, '', $input))) {
+        if (is_numeric(str_replace($stripped, "", $input))) {
             return str_replace($stripped, $replaced, $input);
         } else {
             return $input;
         }
     }
 
+
     /**
-     * Returns singleton instance.
+     * Returns singleton instance
      *
      * @return Nip_Helper_Fulltext
      */
@@ -71,7 +72,6 @@ class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper
         if (!($instance instanceof self)) {
             $instance = new self();
         }
-
         return $instance;
     }
 }

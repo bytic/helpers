@@ -7,11 +7,11 @@ class Paginator extends AbstractHelper
     protected $_url;
     protected $_interval = [];
     protected $_paginator;
-    protected $_viewPath = '/pagination';
+    protected $_viewPath = "/pagination";
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->getPaginator(), $name], $arguments);
+        return call_user_func_array(array($this->getPaginator(), $name), $arguments);
     }
 
     /**
@@ -32,20 +32,19 @@ class Paginator extends AbstractHelper
     public function url($page)
     {
         $return = $this->_url;
-        $return = str_replace('&amp;page='.$this->getPaginator()->getPage(), '', $return);
-        $return = str_replace('&page='.$this->getPaginator()->getPage(), '', $return);
-        $return = str_replace('page='.$this->getPaginator()->getPage(), '', $return);
+        $return = str_replace('&amp;page=' . $this->getPaginator()->getPage(), '', $return);
+        $return = str_replace('&page=' . $this->getPaginator()->getPage(), '', $return);
+        $return = str_replace('page=' . $this->getPaginator()->getPage(), '', $return);
 
         if ($page > 1) {
-            $return = rtrim($return, '/');
+            $return = rtrim($return, "/");
 
             if (strpos($return, '?') === false) {
-                $return .= '?page='.$page;
+                $return .= '?page=' . $page;
             } else {
-                $return .= '&page='.$page;
+                $return .= '&page=' . $page;
             }
         }
-
         return $return;
     }
 
@@ -59,7 +58,7 @@ class Paginator extends AbstractHelper
             $this->getView()->page = $this->getPaginator()->getPage();
             $this->getView()->interval = $this->getInterval();
 
-            $return = $this->getView()->load($this->_viewPath, [], true);
+            $return = $this->getView()->load($this->_viewPath, array(), true);
         }
 
         return $return;
@@ -92,14 +91,12 @@ class Paginator extends AbstractHelper
     public function setViewPath($view)
     {
         $this->_viewPath = $view;
-
         return $this;
     }
 
     public function setURL($url)
     {
         $this->_url = $url;
-
         return $this;
     }
 }

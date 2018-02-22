@@ -16,8 +16,6 @@ class Stylesheets extends AbstractHelper
      * @var array
      */
     protected $files = [];
-    protected $_pack = false;
-
 
     protected $rawStyles = [];
 
@@ -29,7 +27,6 @@ class Stylesheets extends AbstractHelper
     public function add($file, $condition = false)
     {
         $this->files[$condition][$file] = $file;
-
         return $this;
     }
 
@@ -55,7 +52,6 @@ class Stylesheets extends AbstractHelper
             $this->files[$condition] = [];
         }
         array_unshift($this->files[$condition], $file);
-
         return $this;
     }
 
@@ -67,7 +63,6 @@ class Stylesheets extends AbstractHelper
     public function remove($file, $condition = false)
     {
         unset($this->files[$condition][$file]);
-
         return $this;
     }
 
@@ -100,7 +95,6 @@ class Stylesheets extends AbstractHelper
             $return .= implode("\r\n", $this->rawStyles);
             $return .= '</style>';
         }
-
         return $return;
     }
 
@@ -111,9 +105,9 @@ class Stylesheets extends AbstractHelper
      */
     public function buildTag($path, $condition = null)
     {
-        $return = '<link rel="stylesheet" type="text/css" media="screen" href="'.$this->buildURL($path).'" />';
+        $return = '<link rel="stylesheet" type="text/css" media="screen" href="' . $this->buildURL($path) . '" />';
         if ($condition != null && !empty($condition)) {
-            $return = '<!--[if '.$condition.']>'.$return.'<![endif]-->';
+            $return = '<!--[if ' . $condition . ']>' . $return . '<![endif]-->';
         }
         $return .= "\r\n";
 
@@ -129,59 +123,7 @@ class Stylesheets extends AbstractHelper
         if (Str::startsWith($source, ['http', 'https'])) {
             return $source;
         } else {
-            return STYLESHEETS_URL.$source.'.css';
+            return asset('/stylesheets/' . $source . '.css');
         }
-    }
-
-    public function pack($files)
-    {
-        if ($files) {
-            $lastUpdated = 0;
-            foreach ($files as $file) {
-                $path = STYLESHEETS_PATH.$file.'.css';
-                if (file_exists($path)) {
-                    $lastUpdated = max($lastUpdated, filemtime($path));
-                }
-            }
-
-            $hash = md5(implode('', $files)).'.'.$lastUpdated;
-
-            $path = CACHE_PATH.'stylesheets/'.$hash;
-            if (!file_exists($path.'.css')) {
-                $content = '';
-                foreach ($files as $file) {
-                    $content .= file_get_contents(STYLESHEETS_PATH.$file.'.css')."\r\n";
-                }
-
-                $css = new csstidy();
-                $css->set_cfg('remove_last_;', true);
-                $css->load_template('highest_compression');
-
-                $css->parse($content);
-
-                $content = $css->print->plain();
-
-                // Parse content to remove all but one ../ instance
-                $content = preg_replace("`url\((\.\.\/){1,}`i", 'url(../', $content);
-
-                $file = new Nip_File_Handler(['path' => $path.'.css']);
-                $file->write($content);
-
-                if ($file->gzip()) {
-                    $file->setPath($path.'.gz')->write();
-                }
-            }
-
-            return $this->buildURL($hash);
-        }
-
-        return false;
-    }
-
-    public function setPack($pack = true)
-    {
-        $this->_pack = $pack;
-
-        return $this;
     }
 }

@@ -61,6 +61,7 @@ class FacebookMeta extends AbstractHelper
 
             return '<meta property="'.$options['prefix'].':'.$field.'" content="'.$value.'" />';
         }
+        return null;
     }
 
     public function getValue($field)

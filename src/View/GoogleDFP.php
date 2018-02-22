@@ -6,14 +6,15 @@ class GoogleDFP extends AbstractHelper
 {
     protected $_slots = [];
 
+
     public function addSlot($unitName, $width, $height, $divId)
     {
-        $this->_slots[$divId] = [
+        $this->_slots[$divId] = array(
             'unitName' => $unitName,
             'width'    => $width,
             'height'   => $height,
             'divId'    => $divId,
-        ];
+        );
     }
 
     public function getSlots()
@@ -27,8 +28,11 @@ class GoogleDFP extends AbstractHelper
             $return = $this->renderHeadScriptTag();
             $return .= $this->renderHeadScriptCommands();
 
+
             return $return;
         }
+
+        return;
     }
 
     protected function renderHeadScriptTag()
@@ -54,35 +58,42 @@ class GoogleDFP extends AbstractHelper
     protected function renderHeadScriptCommands()
     {
         $return = "<script type='text/javascript'>";
-        $return .= 'googletag.cmd.push(function() { ';
+        $return .= "googletag.cmd.push(function() { ";
         $return .= $this->renderHeadSlots();
-        $return .= 'googletag.pubads().enableSingleRequest(); 
-                        googletag.enableServices();';
-        $return .= '});';
-        $return .= ' </script> ';
+        $return .= "googletag.pubads().enableSingleRequest(); 
+                        googletag.enableServices();";
+        $return .= "});";
+        $return .= " </script> ";
     }
 
     protected function renderHeadSlots()
     {
         $return = '';
         foreach ($this->_slots as $slot) {
-            $return .= "googletag.defineSlot('".$slot['unitName']."', [".$slot['width'].', '.$slot['height']."], '".$slot['divId']."').addService(googletag.pubads());";
+            $return .= "googletag.defineSlot('" . $slot['unitName'] . "', [" . $slot['width'] . ", " . $slot['height'] . "], '" . $slot['divId'] . "').addService(googletag.pubads());";
         }
 
         return $return;
     }
 
+    /**
+     * @param $id
+     *
+     * @return string|void
+     */
     public function renderAdUnit($id)
     {
-        $add = $this->_slots[$id];
+        $add = isset($this->_slots[$id]) ? $this->_slots[$id] : null ;
         if ($add) {
-            return '
-                <!-- '.$add['unitName']." -->
-                <div id='".$add['divId']."' style='width:".$add['width'].'px; height:'.$add['height']."px;'>
+            return "
+                <!-- " . $add['unitName'] . " -->
+                <div id='" . $add['divId'] . "' style='width:" . $add['width'] . "px; height:" . $add['height'] . "px;'>
                 <script type='text/javascript'>
-                googletag.cmd.push(function() { googletag.display('".$add['divId']."'); });
+                googletag.cmd.push(function() { googletag.display('" . $add['divId'] . "'); });
                 </script>
                 </div>";
         }
+
+        return;
     }
 }

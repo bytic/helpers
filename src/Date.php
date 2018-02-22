@@ -10,7 +10,6 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
                 return $unix;
             }
         }
-
         return false;
     }
 
@@ -21,11 +20,11 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
 
         $dDiff = $dStart->diff($dEnd);
 
-        $years = (int) $dDiff->format('%y');
-        $months = (int) $dDiff->format('%m');
-        $days = (int) $dDiff->format('%d');
+        $years = (int) $dDiff->format("%y");
+        $months = (int) $dDiff->format("%m");
+        $days = (int) $dDiff->format("%d");
 
-        return [$years, $months, $days];
+        return array($years, $months, $days);
     }
 
     public function parseUnix($date, $format)
@@ -34,7 +33,7 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * Singleton.
+     * Singleton
      *
      * @return Nip_Helper_Date
      */
@@ -44,7 +43,6 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
         if (!($instance instanceof self)) {
             $instance = new self();
         }
-
         return $instance;
     }
 }

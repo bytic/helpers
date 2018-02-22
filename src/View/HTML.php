@@ -2,16 +2,20 @@
 
 namespace Nip\Helpers\View;
 
+/**
+ * Class HTML
+ * @package Nip\Helpers\View
+ */
 class HTML extends AbstractHelper
 {
-    public function booleanOptions($selected = '')
+    public function booleanOptions($selected = "")
     {
-        $return = '';
+        $return = "";
 
-        $return .= '<option value="0"'.($selected !== '' && $selected == '0' ? ' selected="selected"'
-                : '').'>'.translator()->translate('NO').'</option>';
+        $return .= '<option value="0"'.($selected !== "" && $selected == '0' ? ' selected="selected"'
+                : '').'>'.translator()->translate("NO").'</option>';
         $return .= '<option value="1"'.($selected == '1' ? ' selected="selected"'
-                : '').'>'.translator()->translate('YES').'</option>';
+                : '').'>'.translator()->translate("YES").'</option>';
 
         return $return;
     }
@@ -21,8 +25,7 @@ class HTML extends AbstractHelper
      * @param $string
      * @param $tree
      * @param bool $selected
-     *
-     * @return bool|string
+     * @return string|false
      */
     public function treeOptions($value, $string, $tree, $selected = false)
     {
@@ -36,9 +39,8 @@ class HTML extends AbstractHelper
      * @param $value
      * @param $string
      * @param array $array
-     * @param int   $level
-     *
-     * @return array
+     * @param int $level
+     * @return boolean
      */
     public function optionTree(
         $tree,
@@ -55,12 +57,13 @@ class HTML extends AbstractHelper
                 }
                 $oString .= '|--';
 
-                $oString .= $page->$string;
+                $oString .= $page->{$string};
                 $array[] = [
-                    'value'    => $page->$value,
-                    'string'   => $oString,
+                    'value' => $page->{$value},
+                    'string' => $oString,
                     'disabled' => ($page->has_children == '1') ? false : true,
                 ];
+
 
                 if (is_array($page->children) && count($page->children) > 0) {
                     $array = $this->optionTree($page->children, $value, $string,
@@ -73,12 +76,11 @@ class HTML extends AbstractHelper
     }
 
     /**
-     * @param $options
+     * @param array $options
      * @param bool $value
      * @param bool $string
      * @param bool $selected
-     *
-     * @return bool|string
+     * @return string|false
      */
     public function options(
         $options,
@@ -96,8 +98,8 @@ class HTML extends AbstractHelper
                     $return .= '</optgroup>';
                 } else {
                     if (is_object($option)) {
-                        $oValue = $option->$value;
-                        $oString = $option->$string;
+                        $oValue = $option->{$value};
+                        $oString = $option->{$string};
                         $oDisabled = $option->disabled;
                     } elseif (is_array($option)) {
                         $oValue = $option[$value];
@@ -111,10 +113,8 @@ class HTML extends AbstractHelper
                         $oString = $option;
                     }
 
-                    $oSelected = ($oValue == $selected) ? ' selected="selected" '
-                        : '';
-                    $oDisabled = ($oDisabled === true) ? ' disabled="disabled" '
-                        : '';
+                    $oSelected = ($oValue == $selected) ? ' selected="selected" ' : '';
+                    $oDisabled = (isset($oDisabled) && $oDisabled === true) ? ' disabled="disabled" ' : '';
 
                     $return .= '<option value="'.$oValue.'"'.$oSelected.''.$oDisabled.'>'.$oString.'</option>';
                 }
@@ -126,6 +126,15 @@ class HTML extends AbstractHelper
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $string
+     * @param $options
+     * @param string $separator
+     * @param bool $selected
+     * @return bool|string
+     */
     public function radios(
         $name,
         $value,
@@ -138,8 +147,8 @@ class HTML extends AbstractHelper
             $return = '';
             foreach ($options as $option) {
                 if (is_object($option)) {
-                    $oValue = $option->$value;
-                    $oString = $option->$string;
+                    $oValue = $option->{$value};
+                    $oString = $option->{$string};
                 } elseif (is_array($option)) {
                     $oValue = $option[$value];
                     $oString = $option[$string];
@@ -157,6 +166,10 @@ class HTML extends AbstractHelper
         }
     }
 
+    /**
+     * @param array $items
+     * @return string
+     */
     public function unorderedList($items = [])
     {
         $return = '<ul>';
@@ -172,7 +185,6 @@ class HTML extends AbstractHelper
 
     /**
      * @param array $attributes
-     *
      * @return string
      */
     public function attributes($attributes = [])
@@ -185,20 +197,19 @@ class HTML extends AbstractHelper
             }
         }
 
-        return ' '.implode(' ', $return);
+        return " ".implode(" ", $return);
     }
 
     /**
      * @param $buffer
-     *
      * @return mixed
      */
     public function compress($buffer)
     {
         // remove comments, tabs, spaces, newlines, etc.
         $search = [
-            '/ +/'                                                                                                             => ' ',
-            "/<!--(.*?)-->|[\t\r\n]|<!--|-->|\/\/ <!--|\/\/ -->|<!--\[CDATA\[|\/\/ \]\]-->|\]\]>|\/\/\]\]>|\/\/<!--\[CDATA\[/" => '',
+            "/ +/" => " ",
+            "/<!--(.*?)-->|[\t\r\n]|<!--|-->|\/\/ <!--|\/\/ -->|<!--\[CDATA\[|\/\/ \]\]-->|\]\]>|\/\/\]\]>|\/\/<!--\[CDATA\[/" => "",
         ];
 
         return preg_replace(array_keys($search), array_values($search), $buffer);

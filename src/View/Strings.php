@@ -10,6 +10,6 @@ class Strings extends AbstractHelper
     {
         $helper = HelperBroker::get('Strings');
 
-        return call_user_func_array([$helper, $name], $arguments);
+        return call_user_func_array(array($helper, $name), $arguments);
     }
 }

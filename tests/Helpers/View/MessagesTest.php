@@ -2,6 +2,7 @@
 
 namespace Nip\Helpers\Tests\View;
 
+use Mockery as m;
 use Nip\Helpers\View\Messages;
 
 /**
@@ -36,6 +37,7 @@ class MessagesTest extends \Nip\Helpers\Tests\AbstractTest
 
     protected function setUp()
     {
+        parent::setUp();
         $this->_object = new Messages();
     }
 }
