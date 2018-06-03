@@ -1,40 +1,43 @@
 <?php
 
+/**
+ * Class Nip_Helper_Strings
+ */
 class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
 {
+
     /**
-     * Limits a string to a certain number of words.
+     * Limits a string to a certain number of words
      *
      * @param string $string
-     * @param int    $limit
+     * @param int $limit
      * @param string $end
-     *
      * @return string
      */
     public function limitWords($string, $limit = false, $end = '...')
     {
-        $words = explode(' ', $string);
+        $words = explode(" ", $string);
 
         if (count($words) <= $limit) {
             return $string;
         }
 
         $return = [];
-        for ($i = 0; $i < $limit; $i++) {
-            $return[] = $words[$i];
+        for ($wordCount = 0; $wordCount < $limit; $wordCount++) {
+            $return[] = $words[$wordCount];
         }
 
         $return[] = $end;
 
-        return implode(' ', $return);
+        return implode(" ", $return);
     }
 
+
     /**
-     * Injects GET params in links.
+     * Injects GET params in links
      *
      * @param string $string
-     * @param array  $params
-     *
+     * @param array $params
      * @return string
      */
     public function injectParams($string, $params = [])
@@ -47,10 +50,10 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
                 preg_match('/^([^"]+")([^"]+)/', $match, $matches);
                 if ($matches) {
                     $link = html_entity_decode($matches[2]);
-                    if (strpos($link, '?') === false) {
-                        $link .= '?';
+                    if (strpos($link, "?") === false) {
+                        $link .= "?";
                     } else {
-                        $link .= '&';
+                        $link .= "&";
                     }
 
                     $link .= http_build_query($params);
@@ -65,12 +68,12 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
         return $string;
     }
 
+
     /**
-     * Converts all relative hrefs and image srcs to absolute.
+     * Converts all relative hrefs and image srcs to absolute
      *
      * @param string $string
      * @param string $base
-     *
      * @return string
      */
     public function relativeToAbsolute($string, $base)
@@ -80,7 +83,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
 
         foreach ($matches as &$match) {
             if (preg_match('/<(a|img)\b/', $match) && !preg_match('/(?:http|#|mailto)/', $match)) {
-                $match = preg_replace('/^([^"]+")([^"]+)/', '$1'.$base.'$2', $match);
+                $match = preg_replace('/^([^"]+")([^"]+)/', '$1' . $base . '$2', $match);
             }
         }
 
@@ -89,11 +92,19 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
         return $string;
     }
 
+    /**
+     * @param $number
+     * @return string
+     */
     public function moneyFormat($number)
     {
         return money_format('%n', $number);
     }
 
+    /**
+     * @param $time
+     * @return float|int|mixed
+     */
     public function cronoTimeInSeconds($time)
     {
         $parts = explode(':', $time);
@@ -105,22 +116,35 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
         return (($days * 24 + $hours) * 60 + $minutes) * 60 + $seconds;
     }
 
+    /**
+     * @param $seconds
+     * @return string
+     */
     public function secondsInCronoTime($seconds)
     {
-        if ($days = intval((floor($seconds / 86400)))) {
-            $seconds = $seconds - $days * 86400;
-            $return .= ($return ? ':' : '').str_pad($days, 2, 0, STR_PAD_LEFT);
-        }
-        if ($hours = intval((floor($seconds / 3600))) or $return) {
-            $seconds = $seconds - $hours * 3600;
-            $return .= ($return ? ':' : '').str_pad($hours, 2, 0, STR_PAD_LEFT);
-        }
-        if ($minutes = intval((floor($seconds / 60))) or $return) {
-            $seconds = $seconds - $minutes * 60;
-            $return .= ($return ? ':' : '').str_pad($minutes, 2, 0, STR_PAD_LEFT);
-        }
+        $return = '';
+
+        $days = intval((floor($seconds / 86400)));
+        $seconds = $seconds - $days * 86400;
+
+        $hours = intval((floor($seconds / 3600)));
+        $seconds = $seconds - $hours * 3600;
+
+        $minutes = intval((floor($seconds / 60)));
+        $seconds = $seconds - $minutes * 60;
+
         $seconds = round($seconds, 2);
-        $return .= ($return ? ':' : '').str_pad($seconds, 2, 0, STR_PAD_LEFT);
+
+        if ($days > 0) {
+            $return .= ($return ? ':' : '') . str_pad($days, 2, 0, STR_PAD_LEFT);
+        }
+        if ($hours > 0 or $return) {
+            $return .= ($return ? ':' : '') . str_pad($hours, 2, 0, STR_PAD_LEFT);
+        }
+        if ($minutes > 0 or $return) {
+            $return .= ($return ? ':' : '') . str_pad($minutes, 2, 0, STR_PAD_LEFT);
+        }
+        $return .= ($return ? ':' : '') . str_pad($seconds, 2, 0, STR_PAD_LEFT);
 
         return $return;
     }
