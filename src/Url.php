@@ -33,7 +33,7 @@ class Nip_Helper_Url extends AbstractHelper
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-            $this->pieces[] = inflector()->tableize($name);
+            $this->pieces[] = inflector()->underscore($name);
             return $this;
         } else {
             $this->pieces[] = $name;
