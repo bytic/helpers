@@ -22,7 +22,7 @@
     }
   },
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=7.0",
     "bytic/config": "^1.0",
     "bytic/filesystem": "^1.0",
     "bytic/router": "^1.0"

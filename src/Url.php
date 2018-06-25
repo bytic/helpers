@@ -1,10 +1,11 @@
 <?php
-use Nip\Dispatcher\Dispatcher;
+
+use Nip\Helpers\AbstractHelper;
 
 /**
  * Class Nip_Helper_Url
  */
-class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
+class Nip_Helper_Url extends AbstractHelper
 {
     use \Nip\Router\RouterAwareTrait;
 
@@ -32,7 +33,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-            $this->pieces[] = Dispatcher::reverseControllerName($name);
+            $this->pieces[] = inflector()->tableize($name);
             return $this;
         } else {
             $this->pieces[] = $name;
@@ -95,12 +96,12 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     public function build($params)
     {
         return ((isset($params['scheme'])) ? $params['scheme'] . '://' : '')
-        . ((isset($params['user'])) ? $params['user'] . ((isset($params['pass'])) ? ':' . $params['pass'] : '') . '@' : '')
-        . ((isset($params['host'])) ? $params['host'] : '')
-        . ((isset($params['port'])) ? ':' . $params['port'] : '')
-        . ((isset($params['path'])) ? $params['path'] : '')
-        . ((isset($params['query'])) ? '?' . $params['query'] : '')
-        . ((isset($params['fragment'])) ? '#' . $params['fragment'] : '');
+            . ((isset($params['user'])) ? $params['user'] . ((isset($params['pass'])) ? ':' . $params['pass'] : '') . '@' : '')
+            . ((isset($params['host'])) ? $params['host'] : '')
+            . ((isset($params['port'])) ? ':' . $params['port'] : '')
+            . ((isset($params['path'])) ? $params['path'] : '')
+            . ((isset($params['query'])) ? '?' . $params['query'] : '')
+            . ((isset($params['fragment'])) ? '#' . $params['fragment'] : '');
     }
 
     /**
