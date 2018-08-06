@@ -4,6 +4,7 @@ namespace Nip\Helpers\View;
 
 use Nip\Helpers\AbstractHelper as NipAbstractHelper;
 use Nip\View;
+use Nip\View\ViewInterface;
 
 /**
  * Nip Framework.
@@ -19,7 +20,7 @@ abstract class AbstractHelper extends NipAbstractHelper
 {
     protected $_view;
 
-    public function setView(View $view)
+    public function setView(ViewInterface $view)
     {
         $this->_view = $view;
     }
