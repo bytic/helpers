@@ -34,6 +34,22 @@ class GoogleAnalytics extends AbstractHelper
         $this->ga = new \ByTIC\GoogleAnalytics\Tracking\GoogleAnalytics();
     }
 
+    /**
+     * @return \ByTIC\GoogleAnalytics\Tracking\GoogleAnalytics|null
+     */
+    public function getGa()
+    {
+        return $this->ga;
+    }
+
+    /**
+     * @param $id
+     * @param null $trackerKey
+     */
+    public function setTrackingId($id, $trackerKey = null)
+    {
+        $this->ga->setTrackingId($id, $trackerKey);
+    }
 
     /**
      * @param array $data
@@ -44,7 +60,7 @@ class GoogleAnalytics extends AbstractHelper
     {
         $this->transactions[$data['id']] = $data;
 
-        $this->getFlashMemory()->add('analytics.transactions', $this->transactions);
+        $this->saveTransactionsInFlashMemory();
     }
 
     /**
@@ -54,9 +70,9 @@ class GoogleAnalytics extends AbstractHelper
      */
     public function addTransactionItem($data = [])
     {
-        $this->transactions[$data['transactionId']]['items'] = $data;
+        $this->transactions[$data['transactionId']]['items'][] = $data;
 
-        $this->getFlashMemory()->add('analytics.transactions', json_encode($this->transactions));
+        $this->saveTransactionsInFlashMemory();
     }
 
     /**
@@ -84,12 +100,25 @@ class GoogleAnalytics extends AbstractHelper
         $this->flashMemory = \Nip_Flash::instance();
     }
 
+    protected function saveTransactionsInFlashMemory()
+    {
+        $this->getFlashMemory()->add('analytics.transactions', json_encode($this->transactions));
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getTransactionsInFlashMemory()
+    {
+        return json_decode($this->getFlashMemory()->get('analytics.transactions'), true);
+    }
+
     /**
      * @return string
      */
     public function render()
     {
-        $this->ga->setTrackingId($this->getUA());
+        $this->setTrackingId($this->getUA());
         $this->parseTransactions();
 
         return $this->ga->generateCode();
@@ -116,21 +145,15 @@ class GoogleAnalytics extends AbstractHelper
     public function getTransactions()
     {
         if ($this->transactions === null) {
-            $this->initTransactions();
+            $this->transactions = $this->getTransactionsInFlashMemory();
         }
 
         return $this->transactions;
     }
 
-    public function initTransactions()
-    {
-        $this->transactions = json_decode($this->getFlashMemory()->get('analytics.transactions'));
-    }
-
-
     /**
      * @param $method
-     * @param array  $params
+     * @param array $params
      * @param string $position
      *
      * @return $this
@@ -220,18 +243,5 @@ class GoogleAnalytics extends AbstractHelper
             $ua = $config->get('ANALYTICS.UA');
         }
         $this->setUA($ua);
-    }
-    /**
-     * @param $param
-     *
-     * @return string
-     */
-    public function renderOperationParam($param)
-    {
-        if (is_bool($param)) {
-            return $param === true ? 'true' : 'false';
-        }
-
-        return "'{$param}'";
     }
 }
