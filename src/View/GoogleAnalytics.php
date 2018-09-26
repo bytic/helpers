@@ -2,6 +2,7 @@
 
 namespace Nip\Helpers\View;
 
+use ByTIC\GoogleAnalytics\Tracking\Data\Ecommerce\Transaction;
 use Nip\Config\ConfigAwareTrait;
 use Nip\FlashData\FlashData;
 
@@ -13,17 +14,44 @@ class GoogleAnalytics extends AbstractHelper
 {
     use ConfigAwareTrait;
 
+    protected $ga = null;
+
     public $transactions = null;
 
     protected $trackingId = null;
 
     protected $domain = null;
-    
+
     protected $page;
 
     protected $operations = [];
-    
+
     protected $flashMemory = null;
+
+    /**
+     * GoogleAnalytics constructor.
+     */
+    public function __construct()
+    {
+        $this->ga = new \ByTIC\GoogleAnalytics\Tracking\GoogleAnalytics();
+    }
+
+    /**
+     * @return \ByTIC\GoogleAnalytics\Tracking\GoogleAnalytics|null
+     */
+    public function getGa()
+    {
+        return $this->ga;
+    }
+
+    /**
+     * @param $id
+     * @param null $trackerKey
+     */
+    public function setTrackingId($id, $trackerKey = null)
+    {
+        $this->ga->setTrackingId($id, $trackerKey);
+    }
 
     /**
      * @param array $data
@@ -31,15 +59,21 @@ class GoogleAnalytics extends AbstractHelper
      */
     public function addTransaction($data = [])
     {
-        $order = new \stdClass();
+        $this->transactions[$data['id']] = $data;
 
-        foreach ($data as $key => $value) {
-            $order->{$key} = $value;
-        }
+        $this->saveTransactionsInFlashMemory();
+    }
 
-        $this->transactions[$order->orderId] = $order;
+    /**
+     * @param array $data
+     *
+     * @see http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html
+     */
+    public function addTransactionItem($data = [])
+    {
+        $this->transactions[$data['transactionId']]['items'][] = $data;
 
-        $this->getFlashMemory()->add("analytics.transactions", $this->transactions);
+        $this->saveTransactionsInFlashMemory();
     }
 
     /**
@@ -67,22 +101,17 @@ class GoogleAnalytics extends AbstractHelper
         $this->flashMemory = app('flash.data');
     }
 
-    /**
-     *
-     * @param array $data
-     * @see http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html
-     */
-    public function addTransactionItem($data = [])
+    protected function saveTransactionsInFlashMemory()
     {
-        $item = new \stdClass();
-
-        foreach ($data as $key => $value) {
-            $item->{$key} = $value;
-        }
-
-        $this->transactions[$item->orderId]->items[] = $item;
-
         $this->getFlashMemory()->add("analytics.transactions", json_encode($this->transactions));
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getTransactionsInFlashMemory()
+    {
+        return json_decode($this->getFlashMemory()->get('analytics.transactions'), true);
     }
 
     /**
@@ -90,43 +119,37 @@ class GoogleAnalytics extends AbstractHelper
      */
     public function render()
     {
-        $this->addOperation('_set', ['currencyCode', 'RON'], 'prepend');
-        $this->addOperation('_trackPageview', $this->getPage() ? $this->getPage() : null, 'prepend');
-        $this->addOperation('_setDomainName', $this->getDomain(), 'prepend');
-        $this->addOperation('_setAccount', $this->getTrackingId(), 'prepend');
+        $this->setTrackingId($this->getTrackingId());
+        $this->parseTransactions();
 
-        $this->parseTransactions('');
+        return $this->ga->generateCode();
+    }
 
-        $return = '<script type="text/javascript">';
-        $return .= 'var _gaq = _gaq || [];';
+    /**
+     * @param string $trackerKey
+     */
+    public function parseTransactions($trackerKey = null)
+    {
+        $transactions = $this->getTransactions();
 
-        foreach ($this->operations as $operation) {
-            $return .= "_gaq.push([";
-            $return .= "'{$operation[0]}'";
-            if (isset($operation[1]) && $operation[1] !== null) {
-                $return .= ",";
-                $params = [];
-                if (is_array($operation[1])) {
-                    foreach ($operation[1] as $param) {
-                        $params[] = $this->renderOperationParam($param);
-                    }
-                } else {
-                    $params[] = $this->renderOperationParam($operation[1]);
-                }
-
-                $return .= implode(',', $params);
+        if (count($transactions)) {
+            foreach ($transactions as $transactionData) {
+                $transaction = Transaction::createFromArray($transactionData);
+                $this->ga->addTransaction($transaction, $trackerKey);
             }
-            $return .= "]);";
+        }
+    }
+
+    /**
+     * @return null
+     */
+    public function getTransactions()
+    {
+        if ($this->transactions === null) {
+            $this->transactions = $this->getTransactionsInFlashMemory();
         }
 
-        $return .= "(function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:'== document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();";
-        $return .= '</script>';
-
-        return $return;
+        return $this->transactions;
     }
 
     /**
@@ -204,14 +227,6 @@ class GoogleAnalytics extends AbstractHelper
         return $this->trackingId;
     }
 
-    /**
-     * @param $code
-     */
-    public function setTrackingId($code)
-    {
-        $this->trackingId = $code;
-    }
-
     protected function initUA()
     {
         $ua = '';
@@ -220,73 +235,5 @@ class GoogleAnalytics extends AbstractHelper
             $ua = $config->get('analytics.tracking_id');
         }
         $this->setTrackingId($ua);
-    }
-
-    /**
-     * @param string $prefix
-     */
-    public function parseTransactions($prefix = '')
-    {
-        $transactions = $this->getTransactions();
-
-        $prefix = $prefix ? $prefix . '.' : '';
-
-        if ($transactions) {
-            foreach ($transactions as $transaction) {
-                $this->addOperation($prefix . '_addTrans', [
-                    $transaction->orderId,
-                    $transaction->affiliation,
-                    $transaction->total,
-                    $transaction->tax,
-                    $transaction->shipping,
-                    $transaction->city,
-                    $transaction->state,
-                    $transaction->country
-                ]);
-
-                if ($transaction->items) {
-                    foreach ($transaction->items as $item) {
-                        $this->addOperation($prefix . '_addItem', [
-                            $item->orderId,
-                            $item->sku,
-                            $item->name,
-                            $item->category,
-                            $item->price,
-                            $item->quantity
-                        ]);
-                    }
-                }
-            }
-            $this->addOperation($prefix . '_trackTrans'); //submits transaction to the Analytics servers
-        }
-    }
-
-    /**
-     * @return null
-     */
-    public function getTransactions()
-    {
-        if ($this->transactions === null) {
-            $this->initTransactions();
-        }
-
-        return $this->transactions;
-    }
-
-    public function initTransactions()
-    {
-        $this->transactions = json_decode($this->getFlashMemory()->get("analytics.transactions"));
-    }
-
-    /**
-     * @param $param
-     * @return string
-     */
-    public function renderOperationParam($param)
-    {
-        if (is_bool($param)) {
-            return $param === true ? 'true' : 'false';
-        }
-        return "'{$param}'";
     }
 }

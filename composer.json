@@ -22,10 +22,12 @@
     }
   },
   "require": {
-    "php": ">=7.0",
+    "php": ">=5.5",
+    "ext-json": "*",
     "bytic/config": "^1.0",
     "bytic/filesystem": "^1.0",
-    "bytic/router": "^1.0"
+    "bytic/router": "^1.0",
+    "bytic/google-analytics": "^1.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.0",

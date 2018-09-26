@@ -28,7 +28,7 @@ class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
     public function testAddOperation()
     {
         $data = [
-            'orderId' => 1,
+            'id' => 1,
             'amount' => 100,
         ];
         $this->_object->addTransaction($data);

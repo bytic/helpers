@@ -98,7 +98,8 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
     {
         return money_format('%n', $number);
     }
-/**
+
+    /**
      * @param $time
      * @return float|int|mixed
      */
@@ -112,21 +113,23 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
 
         return (($days*24 + $hours)*60 + $minutes)*60 + $seconds;
     }
-/**
+
+    /**
      * @param $seconds
      * @return string
      */
     public function secondsInCronoTime($seconds)
     {
-        $return = '';$days = intval((floor($seconds / 86400)));
+        $return = '';
+
+        $days = intval((floor($seconds / 86400)));
             $seconds = $seconds - $days * 86400;
 
-        $hours = intval((floor($seconds / 3600))) ;
+        $hours = intval((floor($seconds / 3600)));
             $seconds = $seconds - $hours * 3600;
 
-        $minutes = intval((floor($seconds / 60))) ;
+        $minutes = intval((floor($seconds / 60)));
             $seconds = $seconds - $minutes * 60;
-
         $seconds = round($seconds, 2);
 
         if ($days > 0) {
