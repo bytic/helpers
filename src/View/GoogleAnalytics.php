@@ -111,7 +111,13 @@ class GoogleAnalytics extends AbstractHelper
      */
     protected function getTransactionsInFlashMemory()
     {
-        return json_decode($this->getFlashMemory()->get('analytics.transactions'), true);
+        if ($this->getFlashMemory()->has('analytics.transactions')) {
+            $transactions = json_decode($this->getFlashMemory()->get('analytics.transactions'), true);
+            if (is_array($transactions)) {
+                return $transactions;
+            }
+        }
+        return [];
     }
 
     /**
