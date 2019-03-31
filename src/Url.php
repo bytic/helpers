@@ -41,7 +41,7 @@ class Nip_Helper_Url extends AbstractHelper
 
         $name = $this->pieces ? implode(".", $this->pieces) : '';
         $this->pieces = [];
-        return $this->assemble($name, isset($arguments[0]) ? $arguments[0] : null);
+        return $this->assemble($name, isset($arguments[0]) ? $arguments[0] : []);
     }
 
     /**
@@ -49,7 +49,7 @@ class Nip_Helper_Url extends AbstractHelper
      * @param bool $params
      * @return string|null
      */
-    public function assemble($name, $params = false)
+    public function assemble($name, $params = [])
     {
         return $this->getRouter()->assembleFull($name, $params);
     }
@@ -59,7 +59,7 @@ class Nip_Helper_Url extends AbstractHelper
      * @param bool $params
      * @return string|null
      */
-    public function get($name, $params = false)
+    public function get($name, $params = [])
     {
         return $this->assemble($name, $params);
     }
