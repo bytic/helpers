@@ -26,6 +26,8 @@ class GoogleAnalytics extends AbstractHelper
 
     protected $flashMemory = null;
 
+    protected $rendered = null;
+
     /**
      * GoogleAnalytics constructor.
      */
@@ -116,6 +118,7 @@ class GoogleAnalytics extends AbstractHelper
                 return $transactions;
             }
         }
+
         return [];
     }
 
@@ -123,6 +126,15 @@ class GoogleAnalytics extends AbstractHelper
      * @return string
      */
     public function render()
+    {
+        if ($this->rendered === null) {
+            $this->rendered = $this->doRender();
+        }
+
+        return $this->rendered;
+    }
+
+    protected function doRender()
     {
         $this->setTrackingId($this->getUA());
         $this->parseTransactions();
@@ -243,7 +255,7 @@ class GoogleAnalytics extends AbstractHelper
 
     protected function initUA()
     {
-        $ua = '';
+        $ua     = '';
         $config = $this->getConfig();
         if ($config->has('ANALYTICS.UA')) {
             $ua = $config->get('ANALYTICS.UA');
