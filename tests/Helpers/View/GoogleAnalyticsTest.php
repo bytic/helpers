@@ -11,7 +11,6 @@ use Nip\Helpers\View\GoogleAnalytics;
  */
 class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
 {
-
     public function testAddOperation()
     {
         $data = [

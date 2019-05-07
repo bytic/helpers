@@ -8,7 +8,7 @@ use Nip\HelperBroker;
  * Class Url
  * @package Nip\Helpers\View
  */
-class Url extends AbstractHelper
+class URL extends AbstractHelper
 {
     public function __call($name, $arguments)
     {
