@@ -25,6 +25,18 @@ class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
     protected $trackingId = '';
     protected $trackingDomain = 'galantom.loc';
 
+    public function testGetTrackingIdNotSet()
+    {
+        static::assertEquals(null, $this->_object->getTrackingId());
+    }
+
+    public function testSetTrackingId()
+    {
+        $trackingId = 'UA-999999';
+        $this->_object->setTrackingId($trackingId);
+        static::assertEquals($trackingId, $this->_object->getTrackingId());
+    }
+
     public function testAddOperation()
     {
         $data = [

@@ -52,7 +52,20 @@ class GoogleAnalytics extends AbstractHelper
      */
     public function setTrackingId($id, $trackerKey = null)
     {
+        $this->trackingId = $id;
         $this->ga->setTrackingId($id, $trackerKey);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTrackingId($trackerKey = null)
+    {
+        if ($this->trackingId == null) {
+            $this->initUA();
+        }
+
+        return $this->trackingId;
     }
 
     /**
@@ -135,6 +148,9 @@ class GoogleAnalytics extends AbstractHelper
         return $this->rendered;
     }
 
+    /**
+     * @return string
+     */
     protected function doRender()
     {
         $this->setTrackingId($this->getTrackingId());
@@ -229,22 +245,10 @@ class GoogleAnalytics extends AbstractHelper
         $this->setDomain($domain);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getTrackingId()
-    {
-        if ($this->trackingId == null) {
-            $this->initUA();
-        }
-
-        return $this->trackingId;
-    }
-
     protected function initUA()
     {
         $ua = $this->getConfigValue('tracking_id');
-        $this->setUA($ua);
+        $this->setTrackingId($ua);
     }
 
     /**
