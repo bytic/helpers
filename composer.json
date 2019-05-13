@@ -25,6 +25,7 @@
     "php": ">=5.5",
     "ext-json": "*",
     "bytic/config": "^0.9",
+    "bytic/flash": "^0.9",
     "bytic/router": "^0.9",
     "bytic/google-analytics": "^1.0"
   },

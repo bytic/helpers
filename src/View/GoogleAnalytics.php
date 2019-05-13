@@ -99,7 +99,7 @@ class GoogleAnalytics extends AbstractHelper
 
     public function initFlashMemory()
     {
-        $this->flashMemory = \Nip_Flash::instance();
+        $this->flashMemory = \Nip\FlashData\FlashData::instance();
     }
 
     protected function saveTransactionsInFlashMemory()
@@ -225,11 +225,7 @@ class GoogleAnalytics extends AbstractHelper
 
     protected function initDomain()
     {
-        $domain = '';
-        $config = $this->getConfig();
-        if ($config->has('ANALYTICS.domain')) {
-            $domain = $config->get('ANALYTICS.domain');
-        }
+        $domain = $this->getConfigValue('domain');
         $this->setDomain($domain);
     }
 
@@ -255,11 +251,32 @@ class GoogleAnalytics extends AbstractHelper
 
     protected function initUA()
     {
-        $ua     = '';
-        $config = $this->getConfig();
-        if ($config->has('ANALYTICS.UA')) {
-            $ua = $config->get('ANALYTICS.UA');
-        }
+        $ua = $this->getConfigValue('tracking_id');
         $this->setUA($ua);
+    }
+
+    /**
+     * @param $key
+     * @param null $default
+     * @return mixed|null
+     */
+    protected function getConfigValue($configKey, $default = null)
+    {
+        $nameKeys = [
+            'tracking_id' => ['analytics.tracking_id', 'ANALYTICS.UA'],
+            'domain' => ['ANALYTICS.domain'],
+        ];
+        $config = $this->getConfig();
+        $tries = $nameKeys[$configKey];
+        foreach ($tries as $key => $try) {
+            $tries[] = 'services.' . $try;
+        }
+
+        foreach ($tries as $try) {
+            if ($config->has($try)) {
+                return $config->get($try);
+            }
+        }
+        return $default;
     }
 }
