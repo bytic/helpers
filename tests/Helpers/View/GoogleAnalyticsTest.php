@@ -34,7 +34,7 @@ class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
         $this->_object->addTransaction($data);
 
         $response = [
-            1 => (object) $data
+            1 => $data
         ];
 
         static::assertEquals($this->_object->getTransactions(), $response);

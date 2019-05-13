@@ -225,11 +225,7 @@ class GoogleAnalytics extends AbstractHelper
 
     protected function initDomain()
     {
-        $domain = '';
-        $config = $this->getConfig();
-        if ($config->has('ANALYTICS.domain')) {
-            $domain = $config->get('ANALYTICS.domain');
-        }
+        $domain = $this->getConfigValue('domain');
         $this->setDomain($domain);
     }
 
@@ -247,11 +243,32 @@ class GoogleAnalytics extends AbstractHelper
 
     protected function initUA()
     {
-        $ua     = '';
+        $ua = $this->getConfigValue('tracking_id');
+        $this->setUA($ua);
+    }
+
+    /**
+     * @param $key
+     * @param null $default
+     * @return mixed|null
+     */
+    protected function getConfigValue($configKey, $default = null)
+    {
+        $nameKeys = [
+            'tracking_id' => ['analytics.tracking_id', 'ANALYTICS.UA'],
+            'domain' => ['ANALYTICS.domain'],
+        ];
         $config = $this->getConfig();
-        if ($config->has('analytics.tracking_id')) {
-            $ua = $config->get('analytics.tracking_id');
+        $tries = $nameKeys[$configKey];
+        foreach ($tries as $key => $try) {
+            $tries[] = 'services.' . $try;
         }
-        $this->setTrackingId($ua);
+
+        foreach ($tries as $try) {
+            if ($config->has($try)) {
+                return $config->get($try);
+            }
+        }
+        return $default;
     }
 }

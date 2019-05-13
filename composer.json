@@ -26,6 +26,7 @@
     "ext-json": "*",
     "bytic/config": "^1.0",
     "bytic/filesystem": "^1.0",
+    "bytic/flash": "^1.0",
     "bytic/router": "^1.0",
     "bytic/google-analytics": "^1.0"
   },
