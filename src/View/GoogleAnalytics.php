@@ -259,7 +259,7 @@ class GoogleAnalytics extends AbstractHelper
     protected function getConfigValue($configKey, $default = null)
     {
         $nameKeys = [
-            'tracking_id' => ['analytics.tracking_id', 'ANALYTICS.UA'],
+            'tracking_id' => ['analytics.tracking_id', 'analytics.UA', 'ANALYTICS.UA'],
             'domain' => ['ANALYTICS.domain'],
         ];
         $config = $this->getConfig();
