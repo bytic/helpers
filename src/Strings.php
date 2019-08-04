@@ -12,6 +12,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
      * @param string $string
      * @param int $limit
      * @param string $end
+     *
      * @return string
      */
     public function limitWords($string, $limit = false, $end = '...')
@@ -38,6 +39,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
      *
      * @param string $string
      * @param array $params
+     *
      * @return string
      */
     public function injectParams($string, $params = array())
@@ -46,7 +48,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
         $old   = $links;
 
         foreach ($links as &$match) {
-            if (preg_match('/<a\b/', $match) && !preg_match('/(?:#|mailto)/', $match)) {
+            if (preg_match('/<a\b/', $match) && ! preg_match('/(?:#|mailto)/', $match)) {
                 preg_match('/^([^"]+")([^"]+)/', $match, $matches);
                 if ($matches) {
                     $link = html_entity_decode($matches[2]);
@@ -73,6 +75,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
      *
      * @param string $string
      * @param string $base
+     *
      * @return string
      */
     public function relativeToAbsolute($string, $base)
@@ -81,7 +84,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
         $old     = $matches;
 
         foreach ($matches as &$match) {
-            if (preg_match('/<(a|img)\b/', $match) && !preg_match('/(?:http|#|mailto)/', $match)) {
+            if (preg_match('/<(a|img)\b/', $match) && ! preg_match('/(?:http|#|mailto)/', $match)) {
                 $match = preg_replace('/^([^"]+")([^"]+)/', '$1' . $base . '$2', $match);
             }
         }
@@ -92,6 +95,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
 
     /**
      * @param $number
+     *
      * @return string
      */
     public function moneyFormat($number)
@@ -101,48 +105,28 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
 
     /**
      * @param $time
+     *
      * @return float|int|mixed
      */
     public function cronoTimeInSeconds($time)
     {
-        $parts = explode(':', $time);
+        $parts   = explode(':', $time);
         $seconds = array_pop($parts);
         $minutes = array_pop($parts);
-        $hours = array_pop($parts);
-        $days = array_pop($parts);
+        $hours   = array_pop($parts);
+        $days    = array_pop($parts);
 
         return (($days*24 + $hours)*60 + $minutes)*60 + $seconds;
     }
 
     /**
      * @param $seconds
+     *
      * @return string
      */
     public function secondsInCronoTime($seconds)
     {
-        $return = '';
-
-        $days = intval((floor($seconds / 86400)));
-            $seconds = $seconds - $days * 86400;
-
-        $hours = intval((floor($seconds / 3600)));
-            $seconds = $seconds - $hours * 3600;
-
-        $minutes = intval((floor($seconds / 60)));
-            $seconds = $seconds - $minutes * 60;
-        $seconds = round($seconds, 2);
-
-        if ($days > 0) {
-            $return .= ($return ? ':' : '') . str_pad($days, 2, 0, STR_PAD_LEFT);
-        }
-        if ($hours > 0 or $return) {
-            $return .= ($return ? ':' : '') . str_pad($hours, 2, 0, STR_PAD_LEFT);
-        }
-        if ($minutes > 0 or $return) {
-            $return .= ($return ? ':' : '') . str_pad($minutes, 2, 0, STR_PAD_LEFT);
-        }
-        $return .= ($return ? ':' : '') . str_pad($seconds, 2, 0, STR_PAD_LEFT);
-
-        return $return;
+        return \Nip\Utility\Time::fromSeconds(
+            $seconds )->getDefaultString();
     }
 }
