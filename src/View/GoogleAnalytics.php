@@ -99,7 +99,7 @@ class GoogleAnalytics extends AbstractHelper
 
     public function initFlashMemory()
     {
-        $this->flashMemory = \Nip\FlashData\FlashData::instance();
+        $this->flashMemory = flashData();
     }
 
     protected function saveTransactionsInFlashMemory()
