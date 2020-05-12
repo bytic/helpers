@@ -17,17 +17,17 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Nip\\Helpers\\Tests\\": "tests/",
+      "Nip\\Helpers\\Tests\\": "tests/src",
       "Nip\\Helpers\\Fixtures\\": "tests/fixtures"
     }
   },
   "require": {
     "php": ">=5.5",
     "ext-json": "*",
-    "bytic/config": "^1.0",
-    "bytic/filesystem": "^1.0",
+    "bytic/config": "^0.9|^1.0",
+    "bytic/filesystem": "^0.9|^1.0",
     "bytic/flash": "^0.9|^1.0",
-    "bytic/router": "^1.0",
+    "bytic/router": "^0.9|^1.0",
     "bytic/google-analytics": "^1.0"
   },
   "require-dev": {
