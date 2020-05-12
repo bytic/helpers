@@ -35,7 +35,7 @@ class MessagesTest extends \Nip\Helpers\Tests\AbstractTest
 
     // tests
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->_object = new Messages();
