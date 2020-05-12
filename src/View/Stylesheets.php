@@ -126,4 +126,12 @@ class Stylesheets extends AbstractHelper
             return asset('/stylesheets/' . $source . '.css');
         }
     }
+
+    /**
+     * @deprecated do not use
+     */
+    public function setPack()
+    {
+        return $this;
+    }
 }

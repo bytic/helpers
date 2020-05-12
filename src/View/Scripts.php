@@ -163,4 +163,12 @@ class Scripts extends AbstractHelper
         }
         return $return;
     }
+
+    /**
+     * @deprecated do not use
+     */
+    public function setPack()
+    {
+        return $this;
+    }
 }

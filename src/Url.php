@@ -69,6 +69,16 @@ class Nip_Helper_Url extends AbstractHelper
      * @param bool $params
      * @return string|null
      */
+    public function image($path = null)
+    {
+        return asset('/images/'.$path);
+    }
+
+    /**
+     * @param $name
+     * @param bool $params
+     * @return string|null
+     */
     public function route($name, $params = false)
     {
         return $this->getRouter()->assemble($name, $params);
