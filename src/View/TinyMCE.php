@@ -33,9 +33,9 @@ class TinyMCE extends AbstractHelper
     {
         if ($this->enabled) {
             $this->getView()->Scripts()
-                ->add($this->getBase() . '/jquery.tinymce.min.js', 'tinymce')
-                ->add($this->getBase() . '/tinymce.min.js', 'tinymce')
-                ->add($this->getBase() . '/init.js', 'tinymce');
+                ->add($this->getBase() . '/jquery.tinymce.min', 'tinymce')
+                ->add($this->getBase() . '/tinymce.min', 'tinymce')
+                ->add($this->getBase() . '/init', 'tinymce');
         }
 
         return $this->getView()->Scripts()->render('tinymce');
