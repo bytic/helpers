@@ -90,8 +90,9 @@ class Nip_Helper_Url extends AbstractHelper
      */
     public function base($params = [])
     {
-        $currentRoute = $this->getRouter()->getCurrent();
-        $base = $currentRoute ? $this->getRouter()->assembleFull($currentRoute, $params) : request()->root();
+//        $currentRoute = $this->getRouter()->getCurrent();
+//        $base = $currentRoute ? $this->getRouter()->assembleFull($currentRoute, $params) : request()->root();
+        $base = request()->root();
 
         return $base . ($params ? "?" . http_build_query($params) : '');
     }

@@ -3,6 +3,7 @@
 namespace Nip\Helpers\Tests\Helpers\View;
 
 use Mockery as m;
+use Nip\Config\Config;
 use Nip\FlashData\FlashData;
 use Nip\Helpers\View\GoogleAnalytics;
 
@@ -56,11 +57,12 @@ class GoogleAnalyticsTest extends \Nip\Helpers\Tests\AbstractTest
     {
         parent::setUp();
 
-        $flashMock = m::mock(FlashData::class)->shouldDeferMissing();
+        $flashMock = m::mock(FlashData::class)->makePartial();
 
         $this->_object = new GoogleAnalytics();
         /** @noinspection PhpParamsInspection */
         $this->_object->setFlashMemory($flashMock);
+        $this->_object->setConfig(new Config());
         $this->_object->setTrackingId($this->trackingId);
         $this->_object->setDomain($this->trackingDomain);
     }
