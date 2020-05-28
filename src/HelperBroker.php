@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Nip\Helpers\AbstractHelper;
+use Nip\Utility\Traits\SingletonTrait;
 
 /**
  * Class HelperBroker
@@ -10,6 +11,8 @@ use Nip\Helpers\AbstractHelper;
  */
 class HelperBroker
 {
+    use SingletonTrait;
+
     /**
      * @var AbstractHelper[]
      */
@@ -24,20 +27,6 @@ class HelperBroker
         $broker = self::instance();
 
         return $broker->getByName($name);
-    }
-
-    /**
-     * Singleton
-     * @return self
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
     }
 
     /**

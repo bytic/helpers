@@ -1,6 +1,8 @@
 <?php
 
 use Nip\Helpers\AbstractHelper;
+use Nip\Utility\Str;
+use Nip\Utility\Url;
 
 /**
  * Class Nip_Helper_Url
@@ -8,22 +10,9 @@ use Nip\Helpers\AbstractHelper;
 class Nip_Helper_Url extends AbstractHelper
 {
     use \Nip\Router\RouterAwareTrait;
+    use \Nip\Utility\Traits\SingletonTrait;
 
     protected $pieces = [];
-
-    /**
-     * Singleton
-     * @return Nip_Helper_URL
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
-    }
 
     /**
      * @param $name
@@ -90,68 +79,28 @@ class Nip_Helper_Url extends AbstractHelper
      */
     public function base($params = [])
     {
-//        $currentRoute = $this->getRouter()->getCurrent();
-//        $base = $currentRoute ? $this->getRouter()->assembleFull($currentRoute, $params) : request()->root();
         $base = request()->root();
 
         return $base . ($params ? "?" . http_build_query($params) : '');
     }
 
     /**
-     * Reverse of the PHP built-in function parse_url
-     *
-     * @see http://php.net/parse_url
      * @param array $params
      * @return string
+     * @deprecated
      */
     public function build($params)
     {
-        return ((isset($params['scheme'])) ? $params['scheme'] . '://' : '')
-            . ((isset($params['user'])) ? $params['user'] . ((isset($params['pass'])) ? ':' . $params['pass'] : '') . '@' : '')
-            . ((isset($params['host'])) ? $params['host'] : '')
-            . ((isset($params['port'])) ? ':' . $params['port'] : '')
-            . ((isset($params['path'])) ? $params['path'] : '')
-            . ((isset($params['query'])) ? '?' . $params['query'] : '')
-            . ((isset($params['fragment'])) ? '#' . $params['fragment'] : '');
+        return Url::build($params);
     }
 
     /**
-     * Replaces all non-alphanumeric characters and returns dash-separated string
-     *
      * @param string $input
      * @return string
+     * @deprecated use Nip\Utility\Str::slug
      */
     public function encode($input)
     {
-        $chars = [
-            '&#x102;' => 'a',
-            '&#x103;' => 'a',
-            '&#xC2;' => 'A',
-            '&#xE2;' => 'a',
-            '&#xCE;' => 'I',
-            '&#xEE;' => 'i',
-            '&#x218;' => 'S',
-            '&#x219;' => 's',
-            '&#x15E;' => 'S',
-            '&#x15F;' => 's',
-            '&#x21A;' => 'T',
-            '&#x21B;' => 't',
-            '&#354;' => 'T',
-            '&#355;' => 't'
-        ];
-
-        $change = $with = [];
-        foreach ($chars as $i => $v) {
-            $change[] = html_entity_decode($i, ENT_QUOTES, 'UTF-8');
-            $with[] = $v;
-        }
-        $input = str_replace($change, $with, $input);
-
-        preg_match_all("/[a-z0-9]+/i", $input, $sections);
-        return strtolower(implode("-", $sections[0]));
-    }
-
-    public function getRequest()
-    {
+        return Str::slug($input);
     }
 }

@@ -29,7 +29,6 @@ class HelperBrokerTest extends AbstractTest
         $broker = new HelperBroker();
 
         static::assertInstanceOf('Nip_Helper_Url', $broker->generateHelper('Url'));
-        static::assertInstanceOf('Nip_Helper_Xml', $broker->generateHelper('Xml'));
         static::assertInstanceOf('Nip_Helper_Passwords', $broker->generateHelper('passwords'));
     }
 
@@ -38,7 +37,6 @@ class HelperBrokerTest extends AbstractTest
     public function testGet()
     {
         static::assertInstanceOf('Nip_Helper_Url', HelperBroker::get('Url'));
-        static::assertInstanceOf('Nip_Helper_XML', HelperBroker::get('XML'));
         static::assertInstanceOf('Nip_Helper_Passwords', HelperBroker::get('passwords'));
     }
 }

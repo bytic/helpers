@@ -28,6 +28,7 @@
     "bytic/filesystem": "^0.9|^1.0",
     "bytic/flash": "^0.9|^1.0",
     "bytic/router": "^0.9|^1.0",
+    "bytic/utility": "^0.9|^1.0",
     "bytic/google-analytics": "^1.0"
   },
   "require-dev": {

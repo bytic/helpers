@@ -1,32 +1,29 @@
 <?php
 
+use Nip\Utility\Arr;
+
 class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
 {
 
     /**
-     * Determine whether the given value is array accessible.
-     *
      * @param  mixed $value
      * @return bool
+     * @deprecated use Nip\UtilityArr::accessible($value)
      */
     public static function accessible($value)
     {
-        return is_array($value) || $value instanceof ArrayAccess;
+        return Arr::accessible($value);
     }
 
     /**
-     * Determine if the given key exists in the provided array.
-     *
      * @param  \ArrayAccess|array $array
      * @param  string|int $key
      * @return bool
+     * @deprecated use Nip\UtilityArr::accessible($value)
      */
     public static function exists($array, $key)
     {
-        if ($array instanceof ArrayAccess) {
-            return $array->offsetExists($key);
-        }
-        return array_key_exists($key, $array);
+        return Arr::exists($array, $key);
     }
 
     /**
@@ -36,23 +33,11 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      * @param  callable|null $callback
      * @param  mixed $default
      * @return mixed
+     * @deprecated use Nip\UtilityArr::accessible($value)
      */
     public static function first($array, callable $callback = null, $default = null)
     {
-        if (is_null($callback)) {
-            if (empty($array)) {
-                return value($default);
-            }
-            foreach ($array as $item) {
-                return $item;
-            }
-        }
-        foreach ($array as $key => $value) {
-            if (call_user_func($callback, $value, $key)) {
-                return $value;
-            }
-        }
-        return value($default);
+        return Arr::first($array, $callback, $default);
     }
 
     public function toXLS($array, $filename, $labels = array())
@@ -102,26 +87,11 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      * @param  string $key
      * @param  mixed $default
      * @return mixed
+     * @deprecated use Nip\UtilityArr::accessible($value)
      */
     public static function get($array, $key, $default = null)
     {
-        if (!static::accessible($array)) {
-            return value($default);
-        }
-        if (is_null($key)) {
-            return $array;
-        }
-        if (static::exists($array, $key)) {
-            return $array[$key];
-        }
-        foreach (explode('.', $key) as $segment) {
-            if (static::accessible($array) && static::exists($array, $segment)) {
-                $array = $array[$segment];
-            } else {
-                return value($default);
-            }
-        }
-        return $array;
+        return Arr::get($array, $key, $default);
     }
 
     /**
@@ -129,19 +99,11 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      *
      * @param array $array
      * @return array
+     * @deprecated use Nip\UtilityArr::forgetValues($array, ...$values)
      */
-    public function without($array)
+    public function without($array, ...$values)
     {
-        $values = func_get_args();
-        unset($values[0]);
-
-        if ($values) {
-            foreach ($values as $value) {
-                unset($array[array_search($value, $array)]);
-            }
-        }
-
-        return $array;
+        return \Nip\Utility\Arr::forgetValues($array, $values);
     }
 
     /**
@@ -149,18 +111,11 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      *
      * @param array $array
      * @return array
+     * @deprecated use Nip\UtilityArr::forgetValues($array, ...$keys)
      */
-    public function withoutKeys($array)
+    public function withoutKeys($array, ...$keys)
     {
-        $values = func_get_args();
-        unset($values[0]);
-
-        if ($values) {
-            foreach ($values as $value) {
-                unset($array[$value]);
-            }
-        }
-
+        \Nip\Utility\Arr::forget($array, $keys);
         return $array;
     }
 

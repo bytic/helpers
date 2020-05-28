@@ -2,6 +2,8 @@
 
 class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
 {
+    use \Nip\Utility\Traits\SingletonTrait;
+
     public function validate($date, $format)
     {
         $unix = $this->parseUnix($date, $format);
@@ -30,19 +32,5 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
     public function parseUnix($date, $format)
     {
         return strtotime($date);
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_Date
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

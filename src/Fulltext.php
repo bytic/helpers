@@ -11,6 +11,8 @@
 
 class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper
 {
+    use \Nip\Utility\Traits\SingletonTrait;
+
     public function buildString($keywords, $mode = 'any')
     {
         $return = "";
@@ -58,20 +60,5 @@ class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper
         } else {
             return $input;
         }
-    }
-
-
-    /**
-     * Returns singleton instance
-     *
-     * @return Nip_Helper_Fulltext
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }
