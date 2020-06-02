@@ -24,6 +24,7 @@
   "require": {
     "php": ">=5.5",
     "ext-json": "*",
+    "bytic/assets": "^1.0",
     "bytic/config": "^0.9|^1.0",
     "bytic/filesystem": "^0.9|^1.0",
     "bytic/flash": "^0.9|^1.0",
