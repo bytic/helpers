@@ -3,7 +3,6 @@
 namespace Nip\Helpers\View;
 
 use ByTIC\Assets\Assets;
-use Nip\Utility\Str;
 
 /**
  * Nip Framework
@@ -21,7 +20,7 @@ class Stylesheets extends AbstractHelper
      */
     public function __call($name, $arguments)
     {
-        return forward_static_call([Assets::class, $name], $arguments);
+        return call_user_func_array([Assets::entry()->styles(), $name], $arguments);
     }
 
 //    /**

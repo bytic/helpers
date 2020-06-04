@@ -18,7 +18,7 @@ class Scripts extends AbstractHelper
      */
     public function __call($name, $arguments)
     {
-        return forward_static_call([Assets::class, $name], $arguments);
+        return call_user_func_array([Assets::entry()->scripts(), $name], $arguments);
     }
 
 //    /**
