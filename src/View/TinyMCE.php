@@ -2,6 +2,8 @@
 
 namespace Nip\Helpers\View;
 
+use ByTIC\Assets\Assets;
+
 /**
  * Class TinyMCE
  * @package Nip\Helpers\View
@@ -26,19 +28,13 @@ class TinyMCE extends AbstractHelper
         $this->enabled = $enabled;
     }
 
-    /**
-     * @return string
-     */
     public function init()
     {
         if ($this->enabled) {
-            $this->getView()->Scripts()
-                ->add($this->getBase() . '/jquery.tinymce.min', 'tinymce')
-                ->add($this->getBase() . '/tinymce.min', 'tinymce')
-                ->add($this->getBase() . '/init', 'tinymce');
+            Assets::entry()->scripts()->add($this->getBase() . '/jquery.tinymce.min');
+            Assets::entry()->scripts()->add($this->getBase() . '/tinymce.min');
+            Assets::entry()->scripts()->add($this->getBase() . '/init');
         }
-
-        return $this->getView()->Scripts()->render('tinymce');
     }
 
     /**
@@ -55,5 +51,6 @@ class TinyMCE extends AbstractHelper
     public function setBase($base)
     {
         $this->base = $base;
+        return $this;
     }
 }
