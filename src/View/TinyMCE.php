@@ -31,9 +31,21 @@ class TinyMCE extends AbstractHelper
     public function init()
     {
         if ($this->enabled) {
-            Assets::entry()->scripts()->add($this->getBase() . '/jquery.tinymce.min');
-            Assets::entry()->scripts()->add($this->getBase() . '/tinymce.min');
-            Assets::entry()->scripts()->add($this->getBase() . '/init');
+            $assetEntry = Assets::entry();
+            if (assets_manager()->hasEntrypoint('tinymce')) {
+                $assetEntry->addFromWebpack('tinymce');
+                return;
+            }
+            $base = $this->getBase();
+            if (\Nip\Utility\Url::isValid($base)) {
+                Assets::entry()->scripts()->add($base . '/jquery.tinymce.min.js');
+                Assets::entry()->scripts()->add($base . '/tinymce.min.js');
+                Assets::entry()->scripts()->add($base . '/init.js');
+                return;
+            }
+            Assets::entry()->scripts()->add($base . '/jquery.tinymce.min');
+            Assets::entry()->scripts()->add($base . '/tinymce.min');
+            Assets::entry()->scripts()->add($base . '/init');
         }
     }
 
@@ -51,6 +63,5 @@ class TinyMCE extends AbstractHelper
     public function setBase($base)
     {
         $this->base = $base;
-        return $this;
     }
 }
