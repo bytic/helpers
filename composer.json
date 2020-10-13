@@ -12,7 +12,8 @@
       "Nip\\Helpers\\": "src/"
     },
     "classmap": [
-      "src"
+      "src",
+      "legacy"
     ]
   },
   "autoload-dev": {
@@ -22,7 +23,7 @@
     }
   },
   "require": {
-    "php": ">=5.5",
+    "php": ">=7.1",
     "ext-json": "*",
     "bytic/assets": "^1.0",
     "bytic/config": "^0.9|^1.0",
