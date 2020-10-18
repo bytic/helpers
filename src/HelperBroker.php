@@ -22,11 +22,22 @@ class HelperBroker
      * @param $name
      * @return AbstractHelper
      */
-    public static function get($name)
+    public static function get($name): AbstractHelper
     {
         $broker = self::instance();
 
         return $broker->getByName($name);
+    }
+
+    /**
+     * @param $name
+     * @return boolean
+     */
+    public static function has($name): bool
+    {
+        $broker = self::instance();
+
+        return $broker->hasHelper($name);
     }
 
     /**
