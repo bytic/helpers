@@ -57,6 +57,7 @@ class FacebookMeta extends AbstractHelper
     {
         $value = $this->getValue($field);
         if ($value) {
+            $value = strip_tags($value);
             $options = $this->getFieldOptions($field);
 
             return '<meta property="'.$options['prefix'].':'.$field.'" content="'.$value.'" />';
