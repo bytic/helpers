@@ -46,7 +46,7 @@ class Meta extends AbstractHelper
      */
     public function addKeywords($keywords)
     {
-        SeoMeta::setTitleBase($keywords);
+        SeoMeta::addKeywords($keywords);
 
         return $this;
     }
