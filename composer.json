@@ -36,7 +36,16 @@
   },
   "require-dev": {
     "bytic/http": "^0.9|^1.0",
-    "phpunit/phpunit": "^7.2|^8.0|^9.0",
-    "mockery/mockery": "^1.1"
+    "bytic/phpqatools": "^1.0"
+  },
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true,
+      "ergebnis/composer-normalize": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "bytic/phpqatools": true
+    }
   }
 }

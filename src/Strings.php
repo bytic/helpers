@@ -112,13 +112,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
      */
     public function cronoTimeInSeconds($time)
     {
-        $parts   = explode(':', $time);
-        $seconds = array_pop($parts);
-        $minutes = array_pop($parts);
-        $hours   = array_pop($parts);
-        $days    = array_pop($parts);
-
-        return (($days * 24 + $hours) * 60 + $minutes) * 60 + $seconds;
+        return (new \Nip\Utility\Time\Duration($time))->getSeconds();
     }
 
     /**
