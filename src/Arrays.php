@@ -149,19 +149,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      */
     public function pluck($array, $property, &$return = false)
     {
-        $return = [];
-
-        if (count($array) > 0) {
-            foreach ($array as $item) {
-                if (is_array($item)) {
-                    $this->pluck($array, $property, $return);
-                }
-
-                $return[] = $item->$property;
-            }
-        }
-
-        return $return;
+        return Arr::pluck($array, $property);
     }
 
     /**
