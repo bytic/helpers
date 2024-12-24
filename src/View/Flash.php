@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nip\Helpers\View;
 
 /**
@@ -8,6 +10,7 @@ namespace Nip\Helpers\View;
  */
 class Flash extends AbstractHelper
 {
+    protected $data;
 
     /**
      * @param $key
