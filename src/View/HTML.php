@@ -67,7 +67,7 @@ class HTML extends AbstractHelper
 
                 if (is_array($page->children) && count($page->children) > 0) {
                     $array = $this->optionTree($page->children, $value, $string,
-                        $array, ($level + 1));
+                                               $array, ($level + 1));
                 }
             }
         }
@@ -94,17 +94,17 @@ class HTML extends AbstractHelper
                 if (is_string($key) && is_array($option) && !isset($option[$value])) {
                     $return .= '<optgroup label="'.$key.'">';
                     $return .= $this->options($option, $value, $string,
-                        $selected);
+                                              $selected);
                     $return .= '</optgroup>';
                 } else {
                     if (is_object($option)) {
                         $oValue = $option->{$value};
                         $oString = $option->{$string};
-                        $oDisabled = $option->disabled;
+                        $oDisabled = isset($option->disabled) ? $option->disabled : null;
                     } elseif (is_array($option)) {
                         $oValue = $option[$value];
                         $oString = $option[$string];
-                        $oDisabled = $option['disabled'];
+                        $oDisabled = $option['disabled'] ?? null;
                     } elseif ($value == true) {
                         $oValue = $key;
                         $oString = $option;
